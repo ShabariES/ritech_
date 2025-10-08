@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>AR Marker Scanner</title>
-  <!-- A-Frame for 3D rendering -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <!-- AR.js for marker-based AR -->
-  <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.7/aframe/build/aframe-ar.js"></script>
+  <!-- Updated A-Frame for better compatibility -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <!-- Updated AR.js from current maintainers -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   <style>
     body, html {
       margin: 0;
@@ -29,24 +29,48 @@
       text-align: center;
       z-index: 100;
     }
+
+    .arjs-loader {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.25em;
+    }
   </style>
 </head>
 <body>
+  <!-- Loading indicator -->
+  <div class="arjs-loader">
+    <div>Loading AR experience... Please allow camera access.</div>
+  </div>
 
   <!-- Info text -->
   <div id="info">Point your camera at the marker. A 3D object will appear.</div>
 
   <!-- AR Scene -->
-  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+  <a-scene 
+    embedded 
+    arjs="sourceType: webcam; debugUIEnabled: false;"
+    renderer="antialias: true; alpha: true"
+    vr-mode-ui="enabled: false">
     
-    <!-- Marker detection (pattern marker) -->
-    <a-marker type="pattern" url="assets/markers/hiro.patt">
-      <!-- 3D Model -->
+    <!-- Marker using preset for easier setup -->
+    <a-marker preset="hiro">
+      <!-- 3D Model with animation -->
       <a-entity
-        gltf-model="assets/models/toy.glb"
-        scale="0.2 0.2 0.2"
+        gltf-model="https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+        scale="0.05 0.05 0.05"
         rotation="0 180 0"
-        position="0 0 0">
+        position="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000">
       </a-entity>
     </a-marker>
 
@@ -54,5 +78,11 @@
     <a-entity camera></a-entity>
   </a-scene>
 
+  <script>
+    // Remove loader once scene is loaded
+    document.querySelector('a-scene').addEventListener('loaded', function() {
+      document.querySelector('.arjs-loader').style.display = 'none';
+    });
+  </script>
 </body>
 </html>
